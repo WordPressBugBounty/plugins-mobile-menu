@@ -903,3 +903,6 @@ tr.left-color-options, tr.right-color-options {
 #wpbody-content > div.wrap > div.mobmenu-settings-panel-wrap.mobmenu-standard > div > form > table > tbody > tr.row-1.odd.general-options > th > label {
     display: none;
 }
+.mobmenu-settings-title{
+    display:none;
+}

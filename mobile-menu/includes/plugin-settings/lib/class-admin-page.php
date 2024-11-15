@@ -273,9 +273,9 @@ class MobileMenuAdminPage {
         echo $this->settings['title'];
         ?></h2>
 			<div class="mobmenu-header-wrap-inner">
-				<?php 
+				<span class="mobmenu-settings-title"><?php 
         echo $this->settings['title'];
-        ?>
+        ?></span>
 				<div class="mobile-menu-logo">
 					<img src="<?php 
         echo WP_MOBILE_MENU_PLUGIN_URL . 'includes/assets/logo_mobile_menu.png';

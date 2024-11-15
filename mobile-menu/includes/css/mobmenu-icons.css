@@ -65,9 +65,9 @@
 .mob-icon-star-empty:before { content: '\e93d'; } /* '' */
 .mob-icon-up-dir:before { content: '\e980'; } /* '' */
 .mob-icon-left-dir:before { content: '\e981'; } /* '' */
-.mob-icon-menu:before { content: '\e9d6'; } /* '' */
+.mob-icon-menu:before { content: '\e9d6'; } /* 'î§–' */
 .mob-icon-right-open-2:before { content: '\ea32'; } /* '' */
-.mob-icon-th:before { content: '\eac3'; } /* '' */
+.mob-icon-th:before { content: '\eac3'; }  /* '' */
 .mob-icon-th-large:before { content: '\eac5'; } /* '' */
 .mob-icon-th-list:before { content: '\eac7'; } /* '' */
 .mob-icon-minus:before { content: '\e812'; } /* '' */

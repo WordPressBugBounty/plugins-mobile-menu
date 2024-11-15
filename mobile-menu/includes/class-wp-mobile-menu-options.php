@@ -707,7 +707,7 @@ class WP_Mobile_Menu_Options {
                 'name'    => __( 'Alternative Logo URL', 'mobile-menu' ),
                 'id'      => 'logo_url',
                 'type'    => 'text',
-                'desc'    => __( 'Enter you alternative logo URL. If you leave it blank it will use the Site URL.', 'mobile-menu' ),
+                'desc'    => __( 'Enter you homepage logo URL. If you leave it blank it will use the Site URL.', 'mobile-menu' ),
                 'default' => '',
                 'class'   => 'logo-options',
             ) );
