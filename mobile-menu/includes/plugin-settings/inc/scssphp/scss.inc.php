@@ -691,12 +691,12 @@ class mobmenuscssc {
 				// 1. op_[op name]_[left type]_[right type]
 				// 2. op_[left type]_[right type] (passing the op as first arg
 				// 3. op_[op name]
-				$fn = "op_${opName}_${ltype}_${rtype}";
+				$fn = "op_{$opName}_{$ltype}_{$rtype}";
 				if (is_callable(array($this, $fn)) ||
-					(($fn = "op_${ltype}_${rtype}") &&
+					(($fn = "op_{$ltype}_{$rtype}") &&
 						is_callable(array($this, $fn)) &&
 						$passOp = true) ||
-					(($fn = "op_${opName}") &&
+					(($fn = "op_{$opName}") &&
 						is_callable(array($this, $fn)) &&
 						$genOp = true))
 				{

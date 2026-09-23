@@ -1,0 +1,280 @@
+/* Mobile Menu Preview Styles */
+
+/* Basic mobile menu structure */
+.mobmenu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999999;
+}
+
+.mob-menu-header-holder {
+    position: relative;
+    width: 100%;
+    background: #ffffff;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.mobmenul-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mobmenur-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mobmenu-left-bt,
+.mobmenu-right-bt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.mobmenu-left-bt:hover,
+.mobmenu-right-bt:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.mobmenu-left-bt i,
+.mobmenu-right-bt i {
+    font-size: 24px;
+}
+
+.left-menu-icon-text,
+.right-menu-icon-text {
+    font-weight: 500;
+}
+
+.mob-menu-logo-holder {
+    flex: 1;
+    text-align: center;
+}
+
+.headertext {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+}
+
+/* Mobile menu overlay */
+.mobmenu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999998;
+}
+
+.mobmenu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile menu panel */
+.mobmenu-panel {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    background: #ffffff;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 999999;
+    overflow-y: auto;
+}
+
+.mobmenu-left-panel {
+    left: 0;
+    width: 270px;
+}
+
+.mobmenu-right-panel {
+    right: 0;
+    width: 270px;
+    transform: translateX(100%);
+}
+
+.mobmenu-left-panel.show-panel {
+    transform: translateX(0);
+}
+
+.mobmenu-right-panel.show-panel {
+    transform: translateX(0);
+}
+
+.mobmenu-content {
+    padding: 20px;
+    height: 100%;
+}
+
+.mob-cancel-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.mob-cancel-button:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+/* Menu list styles */
+.wp-mobile-menu {
+    list-style: none;
+    margin: 60px 0 0 0;
+    padding: 0;
+}
+
+.wp-mobile-menu li {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.wp-mobile-menu li:last-child {
+    border-bottom: none;
+}
+
+.wp-mobile-menu a {
+    display: block;
+    padding: 15px 0;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.wp-mobile-menu a:hover {
+    color: #0073aa;
+}
+
+.wp-mobile-menu .sub-menu {
+    margin: 0;
+    padding-left: 20px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.wp-mobile-menu .sub-menu a {
+    padding: 10px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.wp-mobile-menu .sub-menu a:hover {
+    color: #0073aa;
+}
+
+/* Icon fonts */
+.mobmenu-font {
+    font-family: 'mobmenu-icons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.mob-icon-menu:before {
+    content: '\e900';
+}
+
+.mob-icon-cancel:before {
+    content: '\e901';
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .mobmenu-left-panel {
+        width: 90%;
+    }
+}
+
+/* Animation classes */
+.mobmenu-slide-in {
+    animation: slideIn 0.3s ease forwards;
+}
+
+.mobmenu-slide-out {
+    animation: slideOut 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+/* Fade animation */
+.mobmenu-fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.mobmenu-fade-out {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

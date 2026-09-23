@@ -249,17 +249,6 @@ class WP_Mobile_Menu_Options {
                 'custom' => $custom_html,
                 'class'  => 'general-options',
             ) );
-            // Enable/Disable Svg icons.
-            $general_tab->createOption( array(
-                'name'     => __( 'Use SVG Icons (for better performance)', 'mobile-menu' ),
-                'id'       => 'enabled_svg_icons',
-                'type'     => 'enable',
-                'default'  => false,
-                'desc'     => '',
-                'enabled'  => __( 'SVG Icons (faster)', 'mobile-menu' ),
-                'disabled' => __( 'WebFont Icons (slower)', 'mobile-menu' ),
-                'class'    => 'general-options font-options',
-            ) );
             // Enable/Disable Naked Header.
             $general_tab->createOption( array(
                 'name'     => __( 'Header Style', 'mobile-menu' ),
@@ -372,6 +361,38 @@ class WP_Mobile_Menu_Options {
                 'enabled'  => __( 'On', 'mobile-menu' ),
                 'disabled' => __( 'Off', 'mobile-menu' ),
                 'class'    => 'general-visibility-options',
+            ) );
+            // Enable/Disable Global Font Override.
+            $general_tab->createOption( array(
+                'name'     => __( 'Override All Fonts', 'mobile-menu' ),
+                'id'       => 'enable_global_font_override',
+                'type'     => 'enable',
+                'default'  => false,
+                'desc'     => __( 'When enabled, this will override all font family settings in the mobile menu with the font selected below.', 'mobile-menu' ),
+                'enabled'  => __( 'On', 'mobile-menu' ),
+                'disabled' => __( 'Off', 'mobile-menu' ),
+                'class'    => 'font-options',
+            ) );
+            // Global Font Override Font Selection.
+            $general_tab->createOption( array(
+                'name'                => __( 'Global Font Family', 'mobile-menu' ),
+                'id'                  => 'global_font_family',
+                'type'                => 'font',
+                'desc'                => __( 'Select the font family to use for all mobile menu text when Override All Fonts is enabled.', 'mobile-menu' ),
+                'show_font_weight'    => false,
+                'show_font_style'     => false,
+                'show_line_height'    => false,
+                'show_letter_spacing' => false,
+                'show_text_transform' => false,
+                'show_font_variant'   => false,
+                'show_text_shadow'    => false,
+                'show_color'          => false,
+                'show_font_size'      => false,
+                'show_font_family'    => true,
+                'default'             => array(
+                    'font-family' => 'inherit',
+                ),
+                'class'               => 'font-options',
             ) );
             $general_tab->createOption( array(
                 'type'  => 'note',

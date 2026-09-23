@@ -1,0 +1,77 @@
+/* Elementor Mobile Left Menu Widget Styles */
+.elementor-mobile-left-menu-wrapper {
+    display: inline-block;
+}
+
+.elementor-mobile-menu-preview {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 10px;
+    text-align: center;
+}
+
+.elementor-mobile-menu-preview .mobmenu-left-bt {
+    text-decoration: none;
+    color: #333;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.elementor-mobile-menu-note {
+    margin-top: 10px;
+    padding: 10px;
+    background: #e8f4f8;
+    border-left: 4px solid #00a0d2;
+    font-size: 12px;
+    color: #555;
+}
+
+.elementor-mobile-menu-note p {
+    margin: 0;
+}
+
+/* Panel styling for widget instances */
+.elementor-widget-mobile_left_menu .mobmenu-panel {
+    z-index: 999999;
+}
+
+.elementor-widget-mobile_left_menu .mobmenu-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.elementor-widget-mobile_left_menu .mobmenu-left-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.elementor-widget-mobile_left_menu .mobmenu-left-menu li {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.elementor-widget-mobile_left_menu .mobmenu-left-menu li a {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.elementor-widget-mobile_left_menu .mobmenu-left-menu li a:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .elementor-widget-mobile_left_menu .mobmenu-panel {
+        width: 85% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .elementor-widget-mobile_left_menu .mobmenu-panel {
+        width: 95% !important;
+    }
+}

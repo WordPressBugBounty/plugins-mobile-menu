@@ -23,6 +23,13 @@ $woo_menu_width_translate = '100%';
 $woo_menu_width = 0;
 $woo_menu_font = '';
 $search_results_font = $plugin_settings->getOption( 'search_results_font' );
+// Global Font Override Logic
+$enable_global_font_override = $plugin_settings->getOption( 'enable_global_font_override' );
+$global_font_family = $plugin_settings->getOption( 'global_font_family' );
+$global_font_css = '';
+if ( $enable_global_font_override && $global_font_family && isset( $global_font_family['font-family'] ) && 'inherit' !== $global_font_family['font-family'] ) {
+    $global_font_css = 'font-family: ' . $global_font_family['font-family'] . ' !important;';
+}
 if ( in_array( '1', $def_el_arr, true ) ) {
     $default_elements .= '.nav, ';
 }
@@ -79,10 +86,10 @@ if ( $plugin_settings->getOption( 'right_menu_width_units' ) ) {
 }
 if ( $plugin_settings->getOption( 'logo_height' ) > 0 ) {
     $logo_height = $plugin_settings->getOption( 'logo_height' );
+    $logo_height = 'height:' . $logo_height . 'px!important;';
 } else {
-    $logo_height = $plugin_settings->getOption( 'header_height' );
+    $logo_height = 'height: auto; max-height:' . $plugin_settings->getOption( 'header_height' ) . 'px;';
 }
-$logo_height = 'height:' . $logo_height . 'px!important;';
 $header_height = $plugin_settings->getOption( 'header_height' );
 $total_header_height = $header_height;
 $banner_height = 0;
@@ -737,24 +744,6 @@ echo $plugin_settings->getOption( 'left_icon_font_size' );
 ?>px;
 		float: left;
 	}
-	.mobmenul-container svg {
-			width: <?php 
-echo $plugin_settings->getOption( 'left_icon_font_size' );
-?>px;
-	        margin-right: .2em;
-	        margin-left: .2em;
-			padding-top: 2px;
-			float:left;
-	}
-	.show-panel svg.mob-cancel-button {
-		width: <?php 
-echo $plugin_settings->getOption( 'close_icon_font_size' );
-?>px;
-		padding: 4px;
-        margin: 6px;
-	}
-	
-
 	.left-menu-icon-text {
 		float: left;
 		line-height: <?php 
@@ -786,15 +775,6 @@ echo $plugin_settings->getOption( 'right_icon_font_size' );
 echo $plugin_settings->getOption( 'right_icon_font_size' );
 ?>px;
 		float: right;
-	}
-	.mobmenur-container svg {
-			width: <?php 
-echo $plugin_settings->getOption( 'right_icon_font_size' );
-?>px;
-	        margin-right: .2em;
-	        margin-left: .2em;
-			padding-top: 2px;
-			float: left;
 	}
 	<?php 
 echo $default_elements;
@@ -963,4 +943,47 @@ echo $right_menu_font['letter-spacing'];
 echo $right_menu_font['text-transform'];
 ?>;
 }
+
+<?php 
+if ( $global_font_css ) {
+    ?>
+/* Global Font Override - Override all font families in mobile menu */
+#mobmenu, 
+#mobmenuleft, 
+#mobmenuright, 
+.mobmenu, 
+.mobmenu-cart-panel,
+.mobmenu-ajax-search-results,
+.mobmenu-left-panel,
+.mobmenu-right-panel,
+#mobmenu .mob-menu-logo-holder,
+#mobmenu .headertext,
+#mobmenu input,
+#mobmenu button,
+#mobmenuleft .mob-expand-submenu,
+#mobmenuleft > .widgettitle,
+#mobmenuleft li a,
+#mobmenuleft .mobmenu-content h2,
+#mobmenuleft .mobmenu-content h3,
+#mobmenuleft .mobmenu-display-name,
+#mobmenuleft .mobmenu-tabs-header li,
+#mobmenuright li a,
+#mobmenuright .mobmenu-content h2,
+#mobmenuright .mobmenu-content h3,
+.left-menu-icon-text,
+.right-menu-icon-text,
+.mobmenu-cart-panel .checkout-button,
+.mobmenu-cart-panel .bag-button,
+.mobmenu-cart-panel li a,
+.mobmenu-cart-panel a,
+.mobmenu-cart-panel div,
+.mobmenu-ajax-search-results .mobmenu-results-list a .mm-product-title,
+.mobmenu * {
+	<?php 
+    echo $global_font_css;
+    ?>
+}
+<?php 
+}
+?>
 

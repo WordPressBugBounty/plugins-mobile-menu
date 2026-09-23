@@ -3,11 +3,12 @@
 /**
  * Plugin Name: Mobile Menu
  * Description: An easy to use WordPress responsive mobile menu. Keep your mobile visitors engaged.
- * Version: 2.8.8
+ * Version: 2.9
  * Plugin URI: https://www.wpmobilemenu.com/
  * Author: Freshlight Lab
  * Author URI: https://www.freshlightlab.com/
- * Tested up to: 6.8
+ * Requires PHP: 7.4
+ * Tested up to: 7.0
  * Text Domain: mobile-menu
  * Domain Path: /languages/
  * License: GPLv2
@@ -16,7 +17,7 @@
 if ( !defined( 'ABSPATH' ) ) {
     die;
 }
-define( 'WP_MOBILE_MENU_VERSION', '2.8.8' );
+define( 'WP_MOBILE_MENU_VERSION', '2.9' );
 define( 'WP_MOBILE_MENU_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WP_MOBILE_MENU_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 if ( !class_exists( 'WP_Mobile_Menu' ) ) {
@@ -104,23 +105,24 @@ if ( !class_exists( 'WP_Mobile_Menu' ) ) {
                 // Include Freemius SDK.
                 require_once dirname( __FILE__ ) . '/freemius/start.php';
                 $mm_fs = fs_dynamic_init( array(
-                    'id'              => '235',
-                    'slug'            => 'mobile-menu',
-                    'type'            => 'plugin',
-                    'public_key'      => 'pk_1ec93edfb66875251b62505b96489',
-                    'premium_suffix'  => 'Premium',
-                    'is_premium'      => false,
-                    'has_addons'      => false,
-                    'has_paid_plans'  => true,
-                    'has_affiliation' => 'selected',
-                    'trial'           => array(
+                    'id'               => '235',
+                    'slug'             => 'mobile-menu',
+                    'type'             => 'plugin',
+                    'public_key'       => 'pk_1ec93edfb66875251b62505b96489',
+                    'premium_suffix'   => 'Premium',
+                    'is_premium'       => false,
+                    'has_addons'       => false,
+                    'has_paid_plans'   => true,
+                    'has_affiliation'  => 'selected',
+                    'trial'            => array(
                         'days'               => 14,
                         'is_require_payment' => true,
                     ),
-                    'menu'            => array(
+                    'menu'             => array(
                         'slug' => 'mobile-menu-options',
                     ),
-                    'is_live'         => true,
+                    'is_live'          => true,
+                    'is_org_compliant' => true,
                 ) );
             }
             return $mm_fs;
@@ -144,7 +146,6 @@ if ( !class_exists( 'WP_Mobile_Menu' ) ) {
             require_once dirname( __FILE__ ) . '/includes/class-wp-mobile-menu-core.php';
             require_once dirname( __FILE__ ) . '/includes/class-wp-mobile-menu-options.php';
             require_once dirname( __FILE__ ) . '/includes/class-wp-mobile-menu-walker-nav-menu.php';
-            require_once dirname( __FILE__ ) . '/includes/class-wp-mobile-menu-svg-loader.php';
         }
 
         /**
@@ -230,8 +231,21 @@ if ( !class_exists( 'WP_Mobile_Menu' ) ) {
                     'security_menu_item' => wp_create_nonce( 'mobmenu-save-menuitem-nonce' ),
                 ) );
             }
-            // Export Settings.
+            // Export Settings & Live Preview.
             if ( 'toplevel_page_mobile-menu-options' === $hook ) {
+                // Enqueue live preview functionality
+                wp_enqueue_script(
+                    'mobmenu-live-preview',
+                    plugins_url( 'includes/js/mobmenu-live-preview.js', __FILE__ ),
+                    array('jquery'),
+                    WP_MOBILE_MENU_VERSION,
+                    true
+                );
+                wp_localize_script( 'mobmenu-live-preview', 'mobmenu_preview_vars', array(
+                    'plugin_url' => WP_MOBILE_MENU_PLUGIN_URL,
+                    'ajax_url'   => admin_url( 'admin-ajax.php' ),
+                    'nonce'      => wp_create_nonce( 'mobmenu_preview_nonce' ),
+                ) );
                 // Export settings.
                 if ( isset( $_GET['mobmenu-action'] ) && 'download-settings' === sanitize_text_field( $_GET['mobmenu-action'] ) ) {
                     $this->mobmenu_core->mobile_menu_export_settings();

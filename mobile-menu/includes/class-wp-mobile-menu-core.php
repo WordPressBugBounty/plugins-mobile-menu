@@ -197,10 +197,10 @@ class WP_Mobile_Menu_Core {
         $icon,
         $icon_new,
         $hamburger_animation,
-        $close_icon,
-        $color
+        $close_icon
     ) {
         $menu_content = '';
+        //$menu_text    = '';
         if ( '' !== $menu_text ) {
             $menu_text = '<span class="' . $type . '-menu-icon-text">' . __( $menu_text, 'mobile-menu' ) . '</span>';
         }
@@ -226,27 +226,7 @@ class WP_Mobile_Menu_Core {
                 $menu_content .= '<img src="' . $icon_image . '" alt="' . __( ucfirst( $type ) . ' Menu Icon', 'mobile-menu' ) . '">';
                 break;
             case 'icon':
-                $icon_is_svg = $this->plugin_settings->getOption( 'enabled_svg_icons' );
-                if ( $icon_is_svg ) {
-                    $svg_icon = plugin_dir_url( __FILE__ ) . 'svg/' . $icon_font . '_mobmenu.svg';
-                    $loader = new SVGLoader(plugin_dir_path( __DIR__ ) . '/includes/svg');
-                    try {
-                        // With multiple options
-                        $menu_content .= $loader->loadWithOptions( $icon_font . '_mobmenu.svg', [
-                            'color'        => $color,
-                            'width'        => '32px',
-                            'height'       => '32px',
-                            'class'        => $icon_font,
-                            'margin-left'  => '.2em',
-                            'margin-right' => '.2em',
-                        ] );
-                        $menu_content .= $this->mobmenu_close_button( $close_icon );
-                    } catch ( Exception $e ) {
-                        echo "Error: " . $e->getMessage();
-                    }
-                } else {
-                    $menu_content .= '<i class="mob-icon-' . $icon_font . ' mob-menu-icon"></i>' . $this->mobmenu_close_button( $close_icon );
-                }
+                $menu_content .= '<i class="mob-icon-' . $icon_font . ' mob-menu-icon"></i>' . $this->mobmenu_close_button( $close_icon );
                 break;
             case 'animated-icon':
                 $menu_content .= '<button class="hamburger hamburger ' . $hamburger_animation . '" type="button" aria-label="Menu" aria-controls="navigation"><span class="hamburger-box"><span class="hamburger-inner"></span></span></button>';
@@ -322,7 +302,6 @@ class WP_Mobile_Menu_Core {
             $icon = $plugin_settings->getOption( 'left_menu_icon' );
             $icon_new = $plugin_settings->getOption( 'left_menu_icon_new' );
             $animation = $plugin_settings->getOption( 'left_menu_icon_animation' );
-            $color = $plugin_settings->getOption( 'left_menu_icon_color' );
             $left_menu_content = $this->load_mobile_menu_html(
                 'left',
                 $menu_text,
@@ -333,8 +312,7 @@ class WP_Mobile_Menu_Core {
                 $icon,
                 $icon_new,
                 $animation,
-                $close_icon,
-                $color
+                $close_icon
             );
         }
         if ( !$plugin_settings->getOption( 'disabled_logo_text' ) ) {
@@ -351,7 +329,6 @@ class WP_Mobile_Menu_Core {
             $icon = $plugin_settings->getOption( 'right_menu_icon' );
             $icon_new = $plugin_settings->getOption( 'right_menu_icon_new' );
             $animation = $plugin_settings->getOption( 'right_menu_icon_animation' );
-            $color = $plugin_settings->getOption( 'right_menu_icon_color' );
             $right_menu_content = $this->load_mobile_menu_html(
                 'right',
                 $menu_text,
@@ -362,8 +339,7 @@ class WP_Mobile_Menu_Core {
                 $icon,
                 $icon_new,
                 $animation,
-                $close_icon,
-                $color
+                $close_icon
             );
         }
         $language_selector = '';
@@ -579,6 +555,7 @@ class WP_Mobile_Menu_Core {
         // Only build the menu it there is a menu assigned to it.
         if ( '' !== $current_menu ) {
             $current_menu = apply_filters( 'wp_mobile_menu_current_menu', $current_menu, $menu );
+            $current_menu = $this->get_language_specific_menu( $current_menu, $menu );
             // Display the menu.
             $output = wp_nav_menu( array(
                 $menu_param   => $current_menu,
@@ -600,6 +577,103 @@ class WP_Mobile_Menu_Core {
             }
         }
         return $output;
+    }
+
+    /**
+     * Get language-specific menu for multilingual sites.
+     *
+     * @param string $menu_name The base menu name
+     * @param string $menu_type The menu type (left/right)
+     * @return string The language-specific menu name
+     * @since 2.8.7
+     */
+    private function get_language_specific_menu( $menu_name, $menu_type ) {
+        // Check if Polylang is active
+        if ( function_exists( 'pll_current_language' ) ) {
+            $current_lang = pll_current_language();
+            if ( !empty( $current_lang ) ) {
+                // Get all available menus
+                $menus = wp_get_nav_menus();
+                // Try different naming patterns for language-specific menus
+                $language_patterns = array(
+                    $menu_name . ' ' . strtoupper( $current_lang ),
+                    // "Main Menu EN"
+                    $menu_name . ' ' . ucfirst( $current_lang ),
+                    // "Main Menu En"
+                    $menu_name . ' ' . $current_lang,
+                    // "Main Menu en"
+                    $menu_name . '-' . strtoupper( $current_lang ),
+                    // "Main Menu-EN"
+                    $menu_name . '-' . ucfirst( $current_lang ),
+                    // "Main Menu-En"
+                    $menu_name . '-' . $current_lang,
+                    // "Main Menu-en"
+                    $menu_name . '_' . strtoupper( $current_lang ),
+                    // "Main Menu_EN"
+                    $menu_name . '_' . ucfirst( $current_lang ),
+                    // "Main Menu_En"
+                    $menu_name . '_' . $current_lang,
+                );
+                // Search for language-specific menu
+                foreach ( $menus as $menu ) {
+                    if ( in_array( $menu->name, $language_patterns ) ) {
+                        return $menu->name;
+                    }
+                }
+                // Also try searching by menu term_id if the menu_name is numeric
+                if ( is_numeric( $menu_name ) ) {
+                    foreach ( $menus as $menu ) {
+                        if ( in_array( $menu->name, $language_patterns ) ) {
+                            return $menu->term_id;
+                        }
+                    }
+                }
+            }
+        }
+        // Check if WPML is active
+        if ( function_exists( 'icl_get_current_language' ) ) {
+            $current_lang = icl_get_current_language();
+            if ( !empty( $current_lang ) ) {
+                // Get all available menus
+                $menus = wp_get_nav_menus();
+                // Try different naming patterns for WPML language-specific menus
+                $language_patterns = array(
+                    $menu_name . ' ' . strtoupper( $current_lang ),
+                    // "Main Menu EN"
+                    $menu_name . ' ' . ucfirst( $current_lang ),
+                    // "Main Menu En"
+                    $menu_name . ' ' . $current_lang,
+                    // "Main Menu en"
+                    $menu_name . '-' . strtoupper( $current_lang ),
+                    // "Main Menu-EN"
+                    $menu_name . '-' . ucfirst( $current_lang ),
+                    // "Main Menu-En"
+                    $menu_name . '-' . $current_lang,
+                    // "Main Menu-en"
+                    $menu_name . '_' . strtoupper( $current_lang ),
+                    // "Main Menu_EN"
+                    $menu_name . '_' . ucfirst( $current_lang ),
+                    // "Main Menu_En"
+                    $menu_name . '_' . $current_lang,
+                );
+                // Search for language-specific menu
+                foreach ( $menus as $menu ) {
+                    if ( in_array( $menu->name, $language_patterns ) ) {
+                        return $menu->name;
+                    }
+                }
+                // Also try searching by menu term_id if the menu_name is numeric
+                if ( is_numeric( $menu_name ) ) {
+                    foreach ( $menus as $menu ) {
+                        if ( in_array( $menu->name, $language_patterns ) ) {
+                            return $menu->term_id;
+                        }
+                    }
+                }
+            }
+        }
+        // If no language-specific menu found, return the original menu
+        return $menu_name;
     }
 
     /**
@@ -689,8 +763,26 @@ class WP_Mobile_Menu_Core {
     public function mobmenu_el_init_widgets() {
         // Include Widget files
         require_once __DIR__ . '/widgets/mobile-menu.php';
-        // Register widget
+        require_once __DIR__ . '/widgets/mobile-left-menu.php';
+        // Register widgets
         \Elementor\Plugin::instance()->widgets_manager->register_widget_type( new \Mobile_Menu_El_Menu_Widget() );
+        \Elementor\Plugin::instance()->widgets_manager->register_widget_type( new \Mobile_Left_Menu_El_Widget() );
+        // Enqueue Elementor widget styles
+        add_action( 'elementor/editor/before_enqueue_scripts', array($this, 'enqueue_elementor_widget_styles') );
+    }
+
+    /**
+     * Enqueue Elementor widget styles.
+     *
+     * @since 1.0.0
+     */
+    public function enqueue_elementor_widget_styles() {
+        wp_enqueue_style(
+            'mobmenu-elementor-widgets',
+            WP_MOBILE_MENU_PLUGIN_URL . 'includes/css/elementor-widgets.css',
+            array(),
+            WP_MOBILE_MENU_VERSION
+        );
     }
 
     /**
@@ -782,9 +874,7 @@ class WP_Mobile_Menu_Core {
             }
         }
         if ( ('logo' === $header_branding || 'logo-text' === $header_branding || 'text-logo' === $header_branding) && '' !== $logo_img ) {
-            $plugin_settings = MobileMenuOptions::getInstance( 'mobmenu' );
-            $logo_height = $plugin_settings->getOption( 'logo_height' );
-            $logo_output .= '<img class="mob-standard-logo" height="' . $logo_height . '"  src="' . $logo_img . '"  alt="' . esc_attr( $logo_alt ) . '">';
+            $logo_output .= '<img class="mob-standard-logo" src="' . $logo_img . '"  alt="' . esc_attr( $logo_alt ) . '">';
             // If there is a retina logo.
             if ( isset( $logo_img_retina ) ) {
                 $logo_output .= '<img class="mob-retina-logo" src="' . $logo_img_retina . '"  alt="' . __( 'Logo Header Menu', 'mobile-menu' ) . '">';
@@ -820,25 +910,7 @@ class WP_Mobile_Menu_Core {
      * @since 2.7
      */
     public function mobmenu_close_button( $icon ) {
-        $icon_is_svg = $this->plugin_settings->getOption( 'enabled_svg_icons' );
-        if ( $icon_is_svg ) {
-            $color = $this->plugin_settings->getOption( 'left_panel_cancel_button_color' );
-            $svg_icon = plugin_dir_url( __FILE__ ) . 'svg/' . $icon . '_mobmenu.svg';
-            $loader = new SVGLoader(plugin_dir_path( __DIR__ ) . '/includes/svg');
-            try {
-                // With multiple options
-                $close_button = $loader->loadWithOptions( $icon . '_mobmenu.svg', [
-                    'color'        => $color,
-                    'class'        => $icon . ' mob-cancel-button',
-                    'margin-left'  => '.2em',
-                    'margin-right' => '.2em',
-                ] );
-            } catch ( Exception $e ) {
-                echo "Error: " . $e->getMessage();
-            }
-        } else {
-            $close_button = apply_filters( 'mm_close_button_filter', '<i class="mob-icon-' . $icon . ' mob-cancel-button"></i>' );
-        }
+        $close_button = apply_filters( 'mm_close_button_filter', '<i class="mob-icon-' . $icon . ' mob-cancel-button"></i>' );
         return $close_button;
     }
 
@@ -1011,33 +1083,45 @@ class WP_Mobile_Menu_Core {
         $plugin_settings = MobileMenuOptions::getInstance( 'mobmenu' );
         $file_content = '';
         $left_menu = $plugin_settings->getOption( 'left_menu' );
-        // If we are importing an oficial demo.
-        $security = -1;
-        if ( !isset( $_POST["mobmenu_settings_nonce"] ) ) {
-            if ( isset( $_REQUEST['security'] ) ) {
-                $security = wp_verify_nonce( $_REQUEST['security'], 'mobmenu-importer-exporter-nonce' );
-            }
-            if ( $security < 1 ) {
-                $message_code = 'error';
-                $message = __( 'Invalid request.', 'mobile-menu' );
-            }
-        }
-        if ( isset( $_REQUEST['demo'] ) && $security == 1 ) {
-            $file = $_REQUEST['demo'] . '.txt';
-            $file_content = file_get_contents( WP_MOBILE_MENU_PLUGIN_PATH . 'includes/demo-content/' . $file );
-        } else {
-            // If we are importing a settings file from the user.
-            if ( isset( $_FILES['upload_mobmenu_settings'] ) && '' !== $_FILES['upload_mobmenu_settings']['tmp_name'] ) {
-                $file = $_FILES['upload_mobmenu_settings'];
-                $file_content = file_get_contents( $file['tmp_name'] );
+        $is_import_request = isset( $_FILES['upload_mobmenu_settings'] ) || isset( $_REQUEST['demo'] );
+        $import_source = '';
+        // A posted settings nonce means a file upload; otherwise it's a demo import link.
+        if ( $is_import_request && current_user_can( 'manage_options' ) ) {
+            if ( isset( $_POST['mobmenu_settings_nonce'] ) ) {
+                if ( isset( $_FILES['upload_mobmenu_settings'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['mobmenu_settings_nonce'] ) ), $settings_id ) ) {
+                    $import_source = 'file';
+                }
+            } elseif ( isset( $_REQUEST['demo'], $_REQUEST['security'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['security'] ) ), 'mobmenu-importer-exporter-nonce' ) ) {
+                $import_source = 'demo';
             }
         }
-        if ( (isset( $_FILES['upload_mobmenu_settings'] ) || isset( $_REQUEST['demo'] )) && 'error' != $message_code ) {
-            // If the file is empty.
+        if ( $is_import_request && '' === $import_source ) {
+            $message_code = 'error';
+            $message = __( 'Invalid request.', 'mobile-menu' );
+        }
+        if ( 'demo' === $import_source ) {
+            $demo = sanitize_key( wp_unslash( $_REQUEST['demo'] ) );
+            if ( in_array( $demo, array('free-demo', 'shop-demo', 'professional-demo'), true ) ) {
+                $file_content = file_get_contents( WP_MOBILE_MENU_PLUGIN_PATH . 'includes/demo-content/' . $demo . '.txt' );
+            }
+        } elseif ( 'file' === $import_source && '' !== $_FILES['upload_mobmenu_settings']['tmp_name'] ) {
+            $file_content = file_get_contents( $_FILES['upload_mobmenu_settings']['tmp_name'] );
+        }
+        if ( '' !== $import_source ) {
+            $imported_settings = false;
+            if ( $file_content && is_serialized( trim( $file_content ) ) ) {
+                $imported_settings = unserialize( trim( $file_content ), array(
+                    'allowed_classes' => false,
+                ) );
+            }
             if ( !$file_content ) {
                 $message = __( 'The file is empty. Upload a new file and try again.', 'mobile-menu' );
                 $message_code = 'error';
+            } elseif ( !is_array( $imported_settings ) ) {
+                $message = __( 'The file is not a valid Mobile Menu settings file.', 'mobile-menu' );
+                $message_code = 'error';
             } else {
+                $file_content = serialize( $imported_settings );
                 // Update the Mobile Menu Settings.
                 if ( get_option( 'mobmenu_options' ) !== $file_content ) {
                     $result = update_option( 'mobmenu_options', $file_content );

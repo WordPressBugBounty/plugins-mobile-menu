@@ -18,8 +18,6 @@ class MobileMenuCSS {
 
     function __construct( $mobmenuInstance ) {
         $this->mobmenuInstance = $mobmenuInstance;
-        $css = get_option( $this->getCSSSlug() );
-        $generated_css = $this->getCSSFilePath();
         // Gather all the options
         add_action( 'mm_create_option_mobmenu', array($this, 'getOptionsWithCSS') );
         // display our CSS
