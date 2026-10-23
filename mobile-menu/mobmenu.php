@@ -8,7 +8,7 @@
  * Author: Freshlight Lab
  * Author URI: https://www.freshlightlab.com/
  * Requires PHP: 7.4
- * Tested up to: 7.0
+ * Tested up to: 7.1
  * Text Domain: mobile-menu
  * Domain Path: /languages/
  * License: GPLv2

@@ -3,7 +3,7 @@ Contributors: takanakui, freemius, freshlightlab
 link: http://profiles.wordpress.org/takanakui
 Tags:   mobile, responsive, menu,  responsive menu, mobile menu
 Requires at least: 4.4
-Tested up to: 7.0
+Tested up to: 7.1
 Stable tag: 2.9
 Requires PHP: 7.4
 License: GPLv3
