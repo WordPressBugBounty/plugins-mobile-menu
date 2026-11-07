@@ -4,7 +4,7 @@ link: http://profiles.wordpress.org/takanakui
 Tags:   mobile, responsive, menu,  responsive menu, mobile menu
 Requires at least: 4.4
 Tested up to: 7.1
-Stable tag: 2.9
+Stable tag: 2.9.1
 Requires PHP: 7.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -133,6 +133,9 @@ The Premium versions have some more advanced features in general and for Ecommer
 Not available at the moment
  
 == Changelog ==
+
+= 2.9.1 =
+* Improvment! - Update Freemius SDK
 
 = 2.9 =
 * Improvment! - Update Freemius SDK
